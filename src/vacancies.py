@@ -1,19 +1,45 @@
-from locale import currency
-
-
 class Vacancy:
+    """Класс Вакансия"""
+
+    # __slots
     title: str
     link: str
     requirements: str
     salary_currency: str
-    salary: str
+    salary_from: float
+    salary_to: float
 
-
-    def __init__(self, title, link, requirements, salary_currency, salary):
+    def __init__(self, title: str, link: str, requirements: str, salary: dict):
         self.title = title
-        self.link = link
-        self.salary = salary
+        self.alternate_url = link
+        self.__fill_salary(salary)
         self.requirements = requirements
+
+    def __fill_salary(self, salary: dict):
+        """Преобразует словарь с данными о зарплате к числам"""
+        if salary:
+            self.salary_currency = salary.get("currency", "RUR")
+            self.salary_from = salary["from"] if salary["from"] else 0
+            self.salary_to = salary["to"] if salary["to"] else 0
+        else:
+            self.salary_currency = "руб"
+            self.salary_from = 0
+            self.salary_to = 0
+
+    @staticmethod
+    def get_average(num1: float, num2: float):
+        """Вычисляет среднее, при условии, что один из аргументов = 0"""
+        return num1 if num2 == 0 else num2 if num1 == 0 else round((num1 + num2) / 2)
+
+    def __lt__(self, other):
+        """<"""
+        return self.get_average(self.salary_from, self.salary_to) < self.get_average(
+            other.salary_from, other.salary_to
+        )
+
+    def __str__(self):
+        """Строка вывода вакансии"""
+        return f"Наименование: {self.title}, З/п:{self.salary_from} - {self.salary_to} {self.salary_currency}, Требования: {self.requirements} , Ссылка: {self.alternate_url} "
 
     @classmethod
     def cast_to_object_list(cls, vacancies: list) -> list:
@@ -21,23 +47,22 @@ class Vacancy:
         list_of_vacancies = []
         for item in vacancies:
             print(item)
-            salary_dict = item.get("salary")
-            salary_currency = salary_dict.get("currency", "")
-            salary_min = salary_dict.get("from", 0)
-            salary_max = salary_dict.get("to", 0)
-            if salary_min == 0:
-                salary = salary_max
-            elif salary_max == 0:
-                salary = salary_min
-            else:
-                salary = round((salary_min + salary_max) / 2, 2)
-
-            list_of_vacancies.append(cls(item.get("name"), item.get("url",""), item.get("requirements",""), salary_currency, salary))
-
+            list_of_vacancies.append(
+                cls(
+                    item.get("name"),
+                    item.get("alternate_url", ""),
+                    item.get("requirements", ""),
+                    item.get("salary")                )
+            )
         return list_of_vacancies
 
     def to_dict(self):
-        return {"title": self.title, "salary": self.salary, "link": self.link}
+        return {
+            "title": self.title,
+            "currency": self.salary_currency,
+            "salary": self.requirements,
+            "link": self.link,
+        }
 
 
 # vacancies_list = [vacancy.to_dict() for vacancy in vacancies]

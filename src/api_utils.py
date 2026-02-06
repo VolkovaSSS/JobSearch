@@ -1,23 +1,18 @@
 import requests
+from typing import List, Dict
 from abc import ABC, abstractmethod
 
 
 class Parser(ABC):
     """Класс - родитель классов работы с API"""
 
-    # Phyton Создать класс для работы с API ,  в котором Реализован метод подключения к API ,
-    # Реализован метод получения данных .
-
-    @classmethod
     @abstractmethod
-    def __init__(cls):
-        pass
-
-    def connect_to_api(self, params=None):
+    def connect_to_api(self, search_string):
         """Соединение с сайтом"""
         pass
 
-    def get_vacancies(self, keyword):
+    @abstractmethod
+    def get_vacancies(self, search_string, page_n):
         """Получение вакансий с сайта"""
         pass
 
@@ -26,107 +21,39 @@ class HeadHunterAPI(Parser):
     """Класс для работы с API HeadHunter"""
 
     def __init__(self):
-        self.url = "https://api.hh.ru/vacancies"
-        self.headers = {"User-Agent": "HH-User-Agent"}
-        self.params = {"text": "", "page": 0, "per_page": 100}
+        self.__url = "https://api.hh.ru/vacancies"
+        self.__headers = {"User-Agent": "HH-User-Agent"}
+        self.__params = {"text": "", "page": 0, "per_page": 20}
         self.vacancies = []
         # super().__init__()
 
-    def connect_to_api(self, params=None):
+    def connect_to_api(self, search_string: str):
         """
-        МЕТОД ПОДКЛЮЧЕНИЯ: базовый запрос к API.
-        Отправляет запрос на базовый URL + endpoint.
-        Метод подключения к API HH и получения данных о вакансиях
-        :param params: Словарь параметров запроса
+        Метод подключения к API HH
+        :param search_string: строка поиска вакансий
         :return: Ответ от API или None в случае ошибки
         """
         try:
-            # Выполнение GET-запроса к API
-            # url = f"{self.base_url}/{endpoint}"
-            # response = requests.get(url, params=params)
-            response = requests.get(self.url, headers=self.headers, params=params)
-            # Проверка успешности запроса
+            self.__params["text"] = search_string
+            response = requests.get(
+                self.__url, headers=self.__headers, params=self.__params
+            )
             response.raise_for_status()
-            # Возврат JSON-ответа
-            return response.json()
+            return response
         except requests.RequestException as e:
-            # Обработка ошибок подключения
             print(f"Ошибка при подключении к API: {e}")
             return None
 
-    def get_vacancies(self, keyword: str) -> list:
+    def get_vacancies(self, search_string: str, page_n: int = 5) -> List[Dict]:
         """Метод получения и обработки данных о вакансиях
-        :param search_params: Параметры поиска вакансий
+        :param page_n: кол-во страниц
+        :param search_string: строка поиска вакансий
         :return: Список обработанных вакансий"""
-
-        # Вызов метода подключения перед получением данных
-        # self.params['text'] = keyword
-        # return self.connect_to_api("vacancies", params) vacancies[0]
-
-        self.params["text"] = keyword
-        while self.params.get("page") != 5:
-            response = requests.get(self.url, headers=self.headers, params=self.params)
-            vacancies = response.json()["items"]
-            self.vacancies.extend(vacancies)
-            self.params["page"] += 1
-        return self.vacancies
-
-
-class HHVacancyParser:
-
-    def connect_to_api(self, params=None):
-        """
-        Метод подключения к API HH и получения данных о вакансиях
-        :param params: Словарь параметров запроса
-        :return: Ответ от API или None в случае ошибки
-        """
-        try:
-            # Выполнение GET-запроса к API
-            response = requests.get(self.api_url, headers=self.headers, params=params)
-            # Проверка успешности запроса
-            response.raise_for_status()
-            # Возврат JSON-ответа
-            return response.json()
-
-        except requests.RequestException as e:
-            # Обработка ошибок подключения
-            print(f"Ошибка при подключении к API: {e}")
-            return None
-
-    def get_vacancies(self, search_params=None):
-        """Метод получения и обработки данных о вакансиях
-        :param search_params: Параметры поиска вакансий
-        :return: Список обработанных вакансий"""
-        # Параметры по умолчанию, если не переданы
-        if search_params is None:
-            search_params = {
-                "text": "Python разработчик",  # Пример поиска
-                "area": 1,  # Москва
-                "page": 0,
-                "per_page": 50,
-            }
-        # Вызов метода подключения к API
-        api_response = self.connect_to_api(params=search_params)
-
-
-class HHApiClient:
-    def __init__(self):
-        self.base_url = "https://api.hh.ru"
-
-    def _send_request(self, endpoint: str, params: dict = None) -> dict:
-        """
-        МЕТОД ПОДКЛЮЧЕНИЯ: базовый запрос к API.
-        Отправляет запрос на базовый URL + endpoint.
-        """
-        url = f"{self.base_url}/{endpoint}"
-        response = requests.get(url, params=params)
-        response.raise_for_status()
-        return response.json()
-
-    def get_vacancies(self, employer_id: str) -> list:
-        """
-        МЕТОД ПОЛУЧЕНИЯ ДАННЫХ: использует метод подключения.
-        """
-        # Вызов метода подключения перед получением данных
-        params = {"employer_id": employer_id, "per_page": 100}
-        return self._send_request("vacancies", params)
+        self.__params["text"] = search_string
+        all_vacancies = []
+        while self.__params.get("page") != page_n:
+            vacancies = self.connect_to_api(search_string).json().get("items", [])
+            if isinstance(vacancies, list):
+                all_vacancies.extend(vacancies)
+            self.__params["page"] += 1
+        return all_vacancies
