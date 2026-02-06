@@ -1,6 +1,7 @@
-import requests
-from typing import List, Dict
 from abc import ABC, abstractmethod
+from typing import Dict, List
+
+import requests
 
 
 class Parser(ABC):

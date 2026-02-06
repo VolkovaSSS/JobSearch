@@ -1,5 +1,6 @@
 from src.vacancies import Vacancy
 
+
 def filter_vacancies(vacancies_list: list[Vacancy], filter_words) -> list[Vacancy]:
     """Фильтрация вакансий по ключевым словам"""
 

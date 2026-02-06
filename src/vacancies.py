@@ -52,7 +52,10 @@ class Vacancy:
 
     def __str__(self):
         """Строка вывода вакансии"""
-        return f"Наименование: {self.title}, З/п:{self.salary_from} - {self.salary_to} {self.salary_currency}, Требования: {self.requirements} , Ссылка: {self.link} "
+        return (
+            f"Наименование: {self.title}, З/п:{self.salary_from} - {self.salary_to} {self.salary_currency}, "
+            f"Требования: {self.requirements} , Ссылка: {self.link} "
+        )
 
     @classmethod
     def cast_to_object_list(cls, vacancies: list) -> list:

@@ -1,7 +1,3 @@
-import pytest
-from src.vacancies import Vacancy
-
-
 def test_vacancy_init(vacancy_test1):
     """Успешная инициализация"""
 
@@ -33,11 +29,11 @@ def test_vacancy_init_no_salary(vacancy_no_salary):
 def test_compare_salary(vacancy_test1, vacancy_test2):
     """Сравнение двух вакансий по зарплате"""
 
-    assert vacancy_test1.__lt__(vacancy_test2) == True
+    expected_result = True
+    assert vacancy_test1.__lt__(vacancy_test2) == expected_result
 
 
 def test_vacancy_str(vacancy_test1):
-    print(
-        str(vacancy_test1)
-    ) == "Наименование: Python Developer, З/п:90000 - 110000 RUR, Требования: Понимаешь логику: Знаешь основы Python или JavaScript , Ссылка: <https://hh.ru/vacancy/123456>"
-    # == "Смартфоны, количество продуктов: 13 шт."
+    """ Тест вывода на печать """
+
+    assert 'Наименование: Python Developer, З/п:90000 - 110000 RUR, ' in str(vacancy_test1)
