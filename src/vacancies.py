@@ -1,17 +1,30 @@
+from typing import Optional
+
+
 class Vacancy:
     """Класс Вакансия"""
 
-    # __slots
     title: str
     link: str
     requirements: str
     salary_currency: str
-    salary_from: float
-    salary_to: float
+    salary_from: int
+    salary_to: int
 
-    def __init__(self, title: str, link: str, requirements: str, salary: dict):
+    __slots__ = (
+        "title",
+        "link",
+        "requirements",
+        "salary_currency",
+        "salary_from",
+        "salary_to",
+    )
+
+    def __init__(
+        self, title: str, link: str, requirements: str, salary: Optional[dict]
+    ):
         self.title = title
-        self.alternate_url = link
+        self.link = link
         self.__fill_salary(salary)
         self.requirements = requirements
 
@@ -22,7 +35,7 @@ class Vacancy:
             self.salary_from = salary["from"] if salary["from"] else 0
             self.salary_to = salary["to"] if salary["to"] else 0
         else:
-            self.salary_currency = "руб"
+            self.salary_currency = "RUR"
             self.salary_from = 0
             self.salary_to = 0
 
@@ -39,11 +52,11 @@ class Vacancy:
 
     def __str__(self):
         """Строка вывода вакансии"""
-        return f"Наименование: {self.title}, З/п:{self.salary_from} - {self.salary_to} {self.salary_currency}, Требования: {self.requirements} , Ссылка: {self.alternate_url} "
+        return f"Наименование: {self.title}, З/п:{self.salary_from} - {self.salary_to} {self.salary_currency}, Требования: {self.requirements} , Ссылка: {self.link} "
 
     @classmethod
     def cast_to_object_list(cls, vacancies: list) -> list:
-        """Преобразовывает список словарей вакансий (сырой ответ из API) в список экземпляров класса Vacancy"""
+        """Преобразует список словарей вакансий (сырой ответ из API) в список экземпляров класса Vacancy"""
         list_of_vacancies = []
         for item in vacancies:
             print(item)
@@ -51,46 +64,16 @@ class Vacancy:
                 cls(
                     item.get("name"),
                     item.get("alternate_url", ""),
-                    item.get("requirements", ""),
-                    item.get("salary")                )
+                    item["snippet"].get("requirements", ""),
+                    item.get("salary", None),
+                )
             )
         return list_of_vacancies
 
-    def to_dict(self):
-        return {
-            "title": self.title,
-            "currency": self.salary_currency,
-            "salary": self.requirements,
-            "link": self.link,
-        }
-
-
-# vacancies_list = [vacancy.to_dict() for vacancy in vacancies]
-# with open('data.json', 'w') as f:
-#     json.dump(data, f, indent=4)
-
-
-def filter_vacancies(vacancies_list, filter_words):
-    """Фильтрация вакансий по ключевым словам"""
-
-    pass
-
-
-def get_vacancies_by_salary(filtered_vacancies, salary_range):
-    """Ранжирует вакансии по зарплате"""
-
-    pass
-
-
-def sort_vacancies(ranged_vacancies):
-
-    pass
-
-
-def get_top_vacancies(sorted_vacancies, top_n):
-
-    pass
-
-
-def print_vacancies(top_vacancies):
-    pass
+    # def to_dict(self):
+    #     return {
+    #         "title": self.title,
+    #         "currency": self.salary_currency,
+    #         "salary": self.requirements,
+    #         "link": self.link,
+    #     }

@@ -7,10 +7,10 @@ from src.vacancies import Vacancy, filter_vacancies, get_vacancies_by_salary, so
 hh_api = HeadHunterAPI()
 
 # Получение вакансий с hh.ru в формате JSON
-if hh_api.connect_to_api("Python"):
-    hh_vacancies = hh_api.get_vacancies("Python")
-else:
-    hh_vacancies = []
+# if hh_api.connect_to_api("Python"):
+hh_vacancies = hh_api.get_vacancies("Python")
+# else:
+#     hh_vacancies = []
 
 # Преобразование набора данных из JSON в список объектов
 # vacancies_list = Vacancy.cast_to_object_list(hh_vacancies)

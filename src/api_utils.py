@@ -7,7 +7,7 @@ class Parser(ABC):
     """Класс - родитель классов работы с API"""
 
     @abstractmethod
-    def connect_to_api(self, search_string):
+    def _connect_to_api(self, search_string):
         """Соединение с сайтом"""
         pass
 
@@ -25,7 +25,7 @@ class HeadHunterAPI(Parser):
         self.__headers = {"User-Agent": "HH-User-Agent"}
         self.__params = {"text": "", "page": 0, "per_page": 20}
 
-    def connect_to_api(self, search_string: str):
+    def _connect_to_api(self, search_string: str):
         """
         Метод подключения к API HH
         :param search_string: строка поиска вакансий
@@ -50,7 +50,7 @@ class HeadHunterAPI(Parser):
         self.__params["text"] = search_string
         all_vacancies = []
         while self.__params.get("page") != page_n:
-            vacancies = self.connect_to_api(search_string).json().get("items", [])
+            vacancies = self._connect_to_api(search_string).json().get("items", [])
             if isinstance(vacancies, list):
                 all_vacancies.extend(vacancies)
             self.__params["page"] += 1
