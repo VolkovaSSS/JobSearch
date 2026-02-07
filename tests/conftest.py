@@ -36,6 +36,7 @@ def vacancy_no_salary() -> Vacancy:
         None,
     )
 
+
 @pytest.fixture
 def vacancies_from_api() -> List[Dict]:
     return [
@@ -50,7 +51,8 @@ def vacancies_from_api() -> List[Dict]:
             "alternate_url": "https://hh.ru/vacancy/129356483",
             "salary": None,
             "snippet": {"requirement": "Продвинутый уровень владения excel"},
-        }]
+        },
+    ]
 
 
 @pytest.fixture
@@ -67,15 +69,15 @@ def vacancies_test() -> List[Dict]:
             "link": "https://hh.ru/vacancy/129356483",
             "salary": None,
             "requirements": "Продвинутый уровень владения excel, PQ, SQL. Базовые знания Phyton. "
-                            "Опыт работы с системами визуализации...",
+            "Опыт работы с системами визуализации...",
         },
         {
             "title": "Специалист по искусственному интеллекту",
             "link": "https://hh.ru/vacancy/129858315",
             "salary": None,
             "requirements": "Высшее образование (Техническое, IT). Опытный пользователь MS Office. "
-                            "Программирование (Phyton, Julia, Scala, Java). Фреймворки машинного обучения "
-                            "(TensorFlow, PyTorch, Scikit-learn...",
+            "Программирование (Phyton, Julia, Scala, Java). Фреймворки машинного обучения "
+            "(TensorFlow, PyTorch, Scikit-learn...",
         },
         {
             "title": "Инженер",

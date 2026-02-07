@@ -72,7 +72,7 @@ class JSONSaver(FileHandler):
         Проверка на дублирование вакансии
         Args:
             existing_data: Существующие данные
-            new_url: Новая вакансия для проверки
+            new_url: url новой вакансии для проверки
         Returns: True если дубликат найден, иначе False
         """
         if not existing_data:

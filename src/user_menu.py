@@ -19,7 +19,7 @@ class UserMenu:
             0: ("Выход", None),
         }
 
-    def display_menu(self):
+    def display_menu(self) -> None:
         """Отображение меню на экране"""
 
         print("\n" + "=" * 30)
@@ -29,7 +29,7 @@ class UserMenu:
             print(f"{key}. {description}")
         print("=" * 30)
 
-    def run(self):
+    def run(self) -> None:
         """Запуск меню с обработкой выбора пользователя"""
 
         while True:

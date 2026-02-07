@@ -21,13 +21,13 @@ def test_get_data_file_success(mock_data):
     ]
 
 
-@patch("builtins.open", new_callable=mock_open, read_data='title')
+@patch("builtins.open", new_callable=mock_open, read_data="title")
 def test_get_data_wrong_format(mock_data, capsys):
     json_s = JSONSaver()
     captured = capsys.readouterr()
     result = json_s.get_data()
     captured = capsys.readouterr()
-    assert  "В файле - некорректные данные. Операция не выполнена\n" == captured.out
+    assert "В файле - некорректные данные. Операция не выполнена\n" == captured.out
     assert result == []
 
 
@@ -38,23 +38,24 @@ def test_get_data_no_file():
 
 
 def test__is_duplicate(vacancies_test: List[Dict]):
-    """ Проверка дублей """
+    """Проверка дублей"""
     json_s = JSONSaver()
     result = json_s._is_duplicate(vacancies_test, "https://hh.ru/vacancy/129356483")
     assert result
 
     result = json_s._is_duplicate(vacancies_test, "https://hh.ru/vacancy/130134630")
-    assert result == False
+    assert not result
+
 
 def test_is_duplicate_empty():
-    """ Проверка дублей с пустым списком """
+    """Проверка дублей с пустым списком"""
     json_s = JSONSaver()
     result = json_s._is_duplicate([], "https://hh.ru/vacancy/129356483")
-    assert result == False
+    assert not result
 
 
 def test_add_data_empty(capsys):
-    """ Проверка записи в файл при отсутствии данных """
+    """Проверка записи в файл при отсутствии данных"""
     json_s = JSONSaver()
     json_s.add_data([])
     captured = capsys.readouterr()
@@ -62,7 +63,7 @@ def test_add_data_empty(capsys):
 
 
 def test_add_data(vacancies_from_api):
-    """ Проверка записи в файл при отсутствии данных """
+    """Проверка записи в файл при отсутствии данных"""
     json_s = JSONSaver("test_file.json")
     json_s.add_data(vacancies_from_api)
     test_vacancies = json_s.get_vacancies()
@@ -75,4 +76,3 @@ def test_add_data(vacancies_from_api):
     test_vacancies = json_s.get_vacancies()
     assert len(test_vacancies) == 1
     json_s.delete_data()
-
