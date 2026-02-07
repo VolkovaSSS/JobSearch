@@ -34,6 +34,8 @@ def test_compare_salary(vacancy_test1, vacancy_test2):
 
 
 def test_vacancy_str(vacancy_test1):
-    """ Тест вывода на печать """
+    """Тест вывода на печать"""
 
-    assert 'Наименование: Python Developer, З/п:90000 - 110000 RUR, ' in str(vacancy_test1)
+    assert "Наименование: Python Developer, З/п:90000 - 110000 RUR, " in str(
+        vacancy_test1
+    )

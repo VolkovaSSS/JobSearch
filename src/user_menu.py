@@ -1,20 +1,27 @@
 from src.api_utils import HeadHunterAPI
 from src.file_utils import JSONSaver
-from src.utils import get_top_vacancies, filter_vacancies
+from src.utils import filter_vacancies, get_top_vacancies
 
-class Menu:
+
+class UserMenu:
+    """Класс для взаимодействия с пользователем"""
+
     def __init__(self):
-        """Инициализация меню с тремя пунктами функций"""
+        """Инициализация меню"""
         self.menu_items = {
             1: ("Выполнить запрос вакансий с сайта hh.ru", self.get_vacancies_from_hh),
             2: ("Получить Топ вакансий по зарплате", self.get_top_vacancies_from_json),
-            3: ("Получить вакансии с ключевым словом в описании", self.get_vacancies_by_key_from_json),
+            3: (
+                "Получить вакансии с ключевым словом в описании",
+                self.get_vacancies_by_key_from_json,
+            ),
             4: ("Очистить файл с вакансиями", self.clear_vacancies_from_json),
-            0: ("Выход", None)
+            0: ("Выход", None),
         }
 
     def display_menu(self):
         """Отображение меню на экране"""
+
         print("\n" + "=" * 30)
         print("МЕНЮ")
         print("=" * 30)
@@ -47,7 +54,7 @@ class Menu:
 
     @staticmethod
     def get_vacancies_from_hh() -> None:
-        """ Запрос вакансий с сайта hh.ru и запись в файл """
+        """Запрос вакансий с сайта hh.ru и запись в файл"""
         keyword = input("Введите ключевое слово для поиска: ")
         hh_api = HeadHunterAPI()
         hh_vacancies = hh_api.get_vacancies(keyword)
@@ -57,7 +64,7 @@ class Menu:
 
     @staticmethod
     def get_top_vacancies_from_json() -> None:
-        """ Топ вакансий по зарплате """
+        """Топ вакансий по зарплате"""
 
         try:
             top_n = int(input("Введите целое число - количество вакансий для топа: "))
@@ -71,19 +78,22 @@ class Menu:
 
     @staticmethod
     def get_vacancies_by_key_from_json() -> None:
-        """ Вывод вакансий по ключевому слову в requirements"""
+        """Вывод вакансий по ключевому слову в requirements"""
 
         keywords = input("Введите слова поиска через пробел: ")
         keywords_list = keywords.split()
         json_saver = JSONSaver()
         vacancies = json_saver.get_vacancies()
-        filtered_vacancies = filter_vacancies(vacancies, keywords_list)
-        for item in filtered_vacancies:
-            print(str(item))
+        if keywords_list and vacancies:
+            filtered_vacancies = filter_vacancies(vacancies, keywords_list)
+            for item in filtered_vacancies:
+                print(str(item))
+        else:
+            print(f"Нет данных по {keywords}")
 
     @staticmethod
     def clear_vacancies_from_json() -> None:
-        """ Удаление всех вакансий из файла"""
+        """Удаление всех вакансий из файла"""
 
         json_saver = JSONSaver()
         json_saver.delete_data()

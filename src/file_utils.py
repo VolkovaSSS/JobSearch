@@ -1,7 +1,7 @@
 import json
 import os
-from pathlib import Path
 from abc import ABC, abstractmethod
+from pathlib import Path
 from typing import Any, Dict, List
 
 from src.vacancies import Vacancy
@@ -11,8 +11,8 @@ class FileHandler(ABC):
     """Абстрактный класс для работы с файлами"""
 
     @abstractmethod
-    def get_data(self) -> List[Dict[str, Any]]:
-        """Получение данных из файла"""
+    def get_vacancies(self) -> List[Vacancy]:
+        """Получение данных о вакансиях из файла"""
         pass
 
     @abstractmethod
@@ -45,12 +45,14 @@ class JSONSaver(FileHandler):
         Returns: Список словарей с вакансиями
         """
         if not os.path.exists(self.__filename):
+            print("Файл пустой")
             return []
         try:
             with open(self.__filename, "r", encoding="utf-8") as file:
                 data = json.load(file)
                 return data if isinstance(data, list) else []
-        except (json.JSONDecodeError, ValueError) as ex:
+        except (json.JSONDecodeError, ValueError):
+            print("В файле - некорректные данные. Операция не выполнена")
             return []
 
     @staticmethod
@@ -86,6 +88,7 @@ class JSONSaver(FileHandler):
         Args: data: Список словарей с данными для добавления
         """
         if not vacancies:
+            print("Нет данных для добавления")
             return
         existing_data = self.get_data()
         for vacancy in vacancies:
@@ -95,7 +98,7 @@ class JSONSaver(FileHandler):
                         "title": vacancy["name"],
                         "link": vacancy["alternate_url"],
                         "salary": vacancy["salary"],
-                        "requirements": vacancy["snippet"]["requirement"],
+                        "requirements": vacancy["snippet"].get("requirement", ""),
                     }
                 )
 
@@ -113,7 +116,7 @@ class JSONSaver(FileHandler):
             with open(self.__filename, "w", encoding="utf-8") as file:
                 json.dump([], file, ensure_ascii=False, indent=2)
         else:
-            del_link = Vacancy.link
+            del_link = del_vacancy.link
             if not del_link:
                 print(
                     "Ссылка не заполнена, нет возможности для отбора. Удаление не выполнено"

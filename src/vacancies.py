@@ -19,7 +19,7 @@ class Vacancy:
         self.title = title
         self.link = link
         self.__fill_salary(salary)
-        self.requirements = requirements
+        self.requirements = requirements if requirements else ""
 
     def __fill_salary(self, salary: dict):
         """Преобразует словарь с данными о зарплате к числам"""
