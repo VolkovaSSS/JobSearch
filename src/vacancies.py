@@ -4,13 +4,6 @@ from typing import Optional
 class Vacancy:
     """Класс Вакансия"""
 
-    title: str
-    link: str
-    requirements: str
-    salary_currency: str
-    salary_from: int
-    salary_to: int
-
     __slots__ = (
         "title",
         "link",
@@ -54,24 +47,24 @@ class Vacancy:
         """Строка вывода вакансии"""
         return (
             f"Наименование: {self.title}, З/п:{self.salary_from} - {self.salary_to} {self.salary_currency}, "
-            f"Требования: {self.requirements} , Ссылка: {self.link} "
+            f"Описание: {self.requirements} , Ссылка: {self.link} "
         )
 
-    @classmethod
-    def cast_to_object_list(cls, vacancies: list) -> list:
-        """Преобразует список словарей вакансий (сырой ответ из API) в список экземпляров класса Vacancy"""
-        list_of_vacancies = []
-        for item in vacancies:
-            print(item)
-            list_of_vacancies.append(
-                cls(
-                    item.get("name"),
-                    item.get("alternate_url", ""),
-                    item["snippet"].get("requirements", ""),
-                    item.get("salary", None),
-                )
-            )
-        return list_of_vacancies
+    # @classmethod
+    # def cast_to_object_list(cls, vacancies: list) -> list:
+    #     """Преобразует список словарей вакансий (сырой ответ из API) в список экземпляров класса Vacancy"""
+    #     list_of_vacancies = []
+    #     for item in vacancies:
+    #         print(item)
+    #         list_of_vacancies.append(
+    #             cls(
+    #                 item.get("name"),
+    #                 item.get("alternate_url", ""),
+    #                 item["snippet"].get("requirements", ""),
+    #                 item.get("salary", None),
+    #             )
+    #         )
+    #     return list_of_vacancies
 
     # def to_dict(self):
     #     return {

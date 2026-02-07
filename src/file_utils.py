@@ -1,5 +1,6 @@
 import json
 import os
+from pathlib import Path
 from abc import ABC, abstractmethod
 from typing import Any, Dict, List
 
@@ -28,11 +29,13 @@ class FileHandler(ABC):
 class JSONSaver(FileHandler):
     """Класс для работы с JSON-файлами с данными о вакансиях"""
 
-    def __init__(self, filename: str = ".data/vacancies.json"):
-        self.__filename = filename
+    def __init__(self, filename: str = "vacancies.json"):
+        base_dir = Path(__file__).resolve().parents[1]
+        full_filename = Path(f"{base_dir}/data/{filename}")
+        self.__filename = full_filename
 
     @property
-    def filename(self) -> str:
+    def filename(self) -> Path:
         """Получение имени файла"""
         return self.__filename
 
@@ -41,13 +44,13 @@ class JSONSaver(FileHandler):
         Получение данных о вакансиях из JSON-файла
         Returns: Список словарей с вакансиями
         """
-        # if not os.path.exists(self.__filename):
-        #     return []
+        if not os.path.exists(self.__filename):
+            return []
         try:
             with open(self.__filename, "r", encoding="utf-8") as file:
                 data = json.load(file)
                 return data if isinstance(data, list) else []
-        except (json.JSONDecodeError, FileNotFoundError):
+        except (json.JSONDecodeError, ValueError) as ex:
             return []
 
     @staticmethod

@@ -1,7 +1,4 @@
-from src.api_utils import HeadHunterAPI
-from src.file_utils import JSONSaver
-from src.vacancies import Vacancy
-from src.utils import filter_vacancies, get_vacancies_by_salary, sort_vacancies, get_top_vacancies, print_vacancies
+from src.user_menu import Menu
 
 
 # Создание экземпляра класса для работы с API сайтов с вакансиями
@@ -20,11 +17,11 @@ from src.utils import filter_vacancies, get_vacancies_by_salary, sort_vacancies,
 # vacancy = Vacancy("Python Developer", "<https://hh.ru/vacancy/123456>", "100 000-150 000 руб.", "Требования: опыт работы от 3 лет...")
 
 # # Сохранение информации о вакансиях в файл
-json_saver = JSONSaver()
+# json_saver = JSONSaver()
 # json_saver.add_data(hh_vacancies)
-vacs = json_saver.get_vacancies()
-for item in vacs:
-    print(str(item))
+# vacs = json_saver.get_vacancies()
+# for item in vacs:
+#     print(str(item))
 
 # json_saver.add_vacancy(vacancy)
 # json_saver.delete_vacancy(vacancy)
@@ -46,5 +43,10 @@ for item in vacs:
 #     print_vacancies(top_vacancies)
 #
 #
-# if __name__ == "__main__":
+if __name__ == "__main__":
+
+    print("Выберите пункт меню:")
+    menu = Menu()
+    menu.run()
+
 #     user_interaction()
